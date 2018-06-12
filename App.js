@@ -7,7 +7,7 @@ var CouponsModel_1 = require("./model/CouponsModel");
 var UserModel_1 = require("./model/UserModel");
 var GooglePassport_1 = require("./GooglePassport");
 var passport = require('passport');
-
+var session = require('express-session');
 var App = /** @class */ (function () {
     
     function App() {
@@ -24,7 +24,7 @@ var App = /** @class */ (function () {
         this.expressApp.use(logger('dev'));
         this.expressApp.use(bodyParser.json());
         this.expressApp.use(bodyParser.urlencoded({ extended: false }));
-        this.expressApp.use(this.session({ secret: 'keyboard cat' }));
+        this.expressApp.use(session({ secret: 'keyboard cat' }));
         this.expressApp.use(passport.initialize());
         this.expressApp.use(passport.session());
     };
