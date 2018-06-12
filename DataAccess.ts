@@ -3,8 +3,8 @@ import Mongoose = require("mongoose");
 class DataAccess {
     static mongooseInstance: any;
     static mongooseConnection: Mongoose.Connection;
-    //static DB_CONNECTION_STRING:string = 'mongodb://dbAdmin:test@localhost:3000/toDoSample?authSource=admin';
-    static DB_CONNECTION_STRING:string ='mongodb://dbUser:TestAccount@ds048319.mlab.com:48319/todoclasssample'
+   
+    static DB_CONNECTION_STRING:string ='mongodb://nockuser1:TeamNock123@ds016718.mlab.com:16718/nockdb'
 
     constructor () {
         DataAccess.connect();

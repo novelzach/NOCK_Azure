@@ -15,8 +15,8 @@ var DataAccess = /** @class */ (function () {
         this.mongooseInstance = Mongoose.connect(this.DB_CONNECTION_STRING);
         return this.mongooseInstance;
     };
-    //static DB_CONNECTION_STRING:string = 'mongodb://dbAdmin:test@localhost:3000/toDoSample?authSource=admin';
-    DataAccess.DB_CONNECTION_STRING = 'mongodb://dbUser:TestAccount@ds048319.mlab.com:48319/todoclasssample';
+    
+    DataAccess.DB_CONNECTION_STRING = 'mongodb://nockuser1:TeamNock123@ds016718.mlab.com:16718/nockdb';
     return DataAccess;
 }());
 exports.DataAccess = DataAccess;
