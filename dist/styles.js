@@ -539,7 +539,7 @@ if(false) {}
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /Users/Jigar/Documents/Academics/Kinjal/MS/SaaS/TeamNOCKcopy/nockApp/src/styles.css */"./src/styles.css");
+module.exports = __webpack_require__(/*! /home/damay/TeamNOCK/nockApp/src/styles.css */"./src/styles.css");
 
 
 /***/ })
