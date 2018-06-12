@@ -4,11 +4,9 @@ import * as logger from 'morgan';
 import * as mongodb from 'mongodb';
 import * as url from 'url';
 import * as bodyParser from 'body-parser';
-//var MongoClient = require('mongodb').MongoClient;
-//var Q = require('q');
 
-import {ListModel} from './model/ListModel';
-import {TaskModel} from './model/TaskModel';
+import {CouponsModel} from './model/CouponsModel';
+import {UserModel} from './model/UserModel';
 import {DataAccess} from './DataAccess';
 
 // Creates and configures an ExpressJS web server.
@@ -16,8 +14,8 @@ class App {
 
   // ref to Express instance
   public expressApp: express.Application;
-  public Lists:ListModel;
-  public Tasks:TaskModel;
+  public Coupons:CouponsModel;
+  public Users:UserModel;
   public idGenerator:number;
 
   //Run configuration methods on the Express instance.
@@ -26,8 +24,8 @@ class App {
     this.middleware();
     this.routes();
     this.idGenerator = 100;
-    this.Lists = new ListModel();
-    this.Tasks = new TaskModel();
+    this.Coupons = new CouponsModel();
+	this.Users = new UserModel();
   }
 
   // Configure Express middleware.
@@ -40,35 +38,28 @@ class App {
   // Configure API endpoints.
   private routes(): void {
     let router = express.Router();
-    router.get('/app/list/:listId/count', (req, res) => {
-        var id = req.params.listId;
-        console.log('Query single list with id: ' + id);
-        this.Tasks.retrieveTasksCount(res, {listId: id});
-    });
+    router.get('/user/:userID', (req, res) => {
+	    var id = req.params.userID;
+	    console.log('Query single user with id: ' + id);
+	    this.Users.getUser(res, {userID: id});
+	});
 
-    router.post('/app/list/', (req, res) => {
-        console.log(req.body);
-        var jsonObj = req.body;
-        jsonObj.listId = this.idGenerator;
-        this.Lists.model.create([jsonObj], (err) => {
-            if (err) {
-                console.log('object creation failed');
-            }
-        });
-        res.send(this.idGenerator.toString());
-        this.idGenerator++;
-    });
+	router.get('/coupon/:couponID', (req, res) => {
+	    var id = req.params.couponID;
+	    console.log('Query single coupon with id: ' + id);
+	    this.Coupons.getCoupon(res, {couponID: id});
+	    console.log(id);
+	});
 
-    router.get('/app/list/:listId', (req, res) => {
-        var id = req.params.listId;
-        console.log('Query single list with id: ' + id);
-        this.Tasks.retrieveTasksDetails(res, {listId: id});
-    });
+	router.get('/coupons/', (req, res) => {
+	    console.log('Get all coupons');
+	    this.Coupons.retrieveAllCoupons(res);
+	});
 
-    router.get('/app/list/', (req, res) => {
-        console.log('Query All list');
-        this.Lists.retrieveAllLists(res);
-    });
+	router.get('/users/', (req,res) => {
+	    console.log('Get all users');
+	    this.Users.retrieveAllUsers(res);
+	});
 
     this.expressApp.use('/', router);
 
