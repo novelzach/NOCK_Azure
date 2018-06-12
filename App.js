@@ -6,13 +6,13 @@ var bodyParser = require("body-parser");
 var CouponsModel_1 = require("./model/CouponsModel");
 var UserModel_1 = require("./model/UserModel");
 var GooglePassport_1 = require("./GooglePassport");
-
 var passport = require('passport');
 
 var App = /** @class */ (function () {
     
     function App() {
         this.expressApp = express();
+         this.googlePassportObj = new GooglePassport_1["default"]();
         this.middleware();
         this.routes();
         this.idGenerator = 100;
