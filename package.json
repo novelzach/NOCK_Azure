@@ -24,7 +24,8 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node AppServer.js"
+    "start": "node AppServer.js",
+    "build": "ng build && node AppServer.js"
   },
   "author": "",
   "license": "ISC"
