@@ -6,13 +6,13 @@ var bodyParser = require("body-parser");
 var CouponsModel_1 = require("./model/CouponsModel");
 var UserModel_1 = require("./model/UserModel");
 var GooglePassport_1 = require("./GooglePassport");
+
 var passport = require('passport');
 
 var App = /** @class */ (function () {
     
     function App() {
         this.expressApp = express();
-        this.googlePassportObj = new GooglePassport_1["default"]();
         this.middleware();
         this.routes();
         this.idGenerator = 100;
@@ -24,26 +24,11 @@ var App = /** @class */ (function () {
         this.expressApp.use(logger('dev'));
         this.expressApp.use(bodyParser.json());
         this.expressApp.use(bodyParser.urlencoded({ extended: false }));
-        this.expressApp.use(session({ secret: 'keyboard cat' }));
-        this.expressApp.use(passport.initialize());
-        this.expressApp.use(passport.session());
     };
     
-    App.prototype.validateAuth = function (req, res, next) {
-        if (req.isAuthenticated()) {
-            console.log("user is authenticated");
-            return next();
-        }
-        console.log("user is not authenticated");
-        res.redirect('/');
-    };
-
     App.prototype.routes = function () {
         var _this = this;
         var router = express.Router();
-        router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
-        router.get('/auth/google/callback', passport.authenticate('google', { successRedirect: 'https://todoappsu.azurewebsites.net/#/list', failureRedirect: '/'
-        }));
         router.get('/user/:userID', function (req, res) {
             var id = req.params.userID;
             console.log('Query single user with id: ' + id);
