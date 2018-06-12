@@ -1,1 +1,0 @@
-mongo ds048319.mlab.com:48319/hikesafe -u dbUser -p TestAccount
