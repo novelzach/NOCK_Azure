@@ -4,25 +4,22 @@ import * as logger from 'morgan';
 import * as mongodb from 'mongodb';
 import * as url from 'url';
 import * as bodyParser from 'body-parser';
-import * as session from 'express-session';
 
 import {CouponsModel} from './model/CouponsModel';
 import {UserModel} from './model/UserModel';
 import {DataAccess} from './DataAccess';
-import GooglePassportObj from './GooglePassport';
 
-let passport = require('passport');
-
+// Creates and configures an ExpressJS web server.
 class App {
 
+  // ref to Express instance
   public expressApp: express.Application;
   public Coupons:CouponsModel;
   public Users:UserModel;
   public idGenerator:number;
-  public googlePassportObj:GooglePassportObj;
 
+  //Run configuration methods on the Express instance.
   constructor() {
-    this.googlePassportObj = new GooglePassportObj();
     this.expressApp = express();
     this.middleware();
     this.routes();
@@ -31,63 +28,63 @@ class App {
 	this.Users = new UserModel();
   }
 
+  // Configure Express middleware.
   private middleware(): void {
     this.expressApp.use(logger('dev'));
     this.expressApp.use(bodyParser.json());
     this.expressApp.use(bodyParser.urlencoded({ extended: false }));
-    this.expressApp.use(session({ secret: 'keyboard cat' }));
-    this.expressApp.use(passport.initialize());
-    this.expressApp.use(passport.session());
   }
 
-  private validateAuth(req, res, next):void {
-    if (req.isAuthenticated()) { console.log("user is authenticated"); return next(); }
-    console.log("user is not authenticated");
-    res.redirect('/');
-  }
-
+  // Configure API endpoints.
   private routes(): void {
     let router = express.Router();
-
-    // Google Auth
-    router.get('/auth/google', 
-        passport.authenticate('google', 
-            { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }
-        )
-    );
-
-    router.get('/auth/google/callback', 
-        passport.authenticate('google', 
-            { successRedirect: '/#/welcome', failureRedirect: '/'
-            }
-        )
-    );
-
-    // Other
-    router.get('/app/user/:userID', (req, res) => {
+    router.get('/user/:userID', (req, res) => {
 	    var id = req.params.userID;
 	    console.log('Query single user with id: ' + id);
 	    this.Users.getUser(res, {userID: id});
 	});
 
-	router.get('/app/coupon/:couponID', (req, res) => {
+	router.get('/coupon/:couponID', (req, res) => {
 	    var id = req.params.couponID;
 	    console.log('Query single coupon with id: ' + id);
 	    this.Coupons.getCoupon(res, {couponID: id});
 	    console.log(id);
 	});
 
-	router.get('/app/coupons/', (req, res) => {
+	router.get('/coupons/', (req, res) => {
 	    console.log('Get all coupons');
 	    this.Coupons.retrieveAllCoupons(res);
 	});
 
-	router.get('/app/users/', (req,res) => {
+	router.get('/users/', (req,res) => {
 	    console.log('Get all users');
 	    this.Users.retrieveAllUsers(res);
 	});
 
-    this.expressApp.use('/', router);
+	//add posts under here
+	router.post('/coupons', (req, res) => {
+	    console.log('Post request body: ${req.body}');
+	    var jsonObj: any = {};
+	    jsonObj.couponID = this.idGenerator;
+	    jsonObj.product = req.body.product;
+	    jsonObj.store = req.body.store;
+	    jsonObj.exp_date = req.body.exp_date;
+	    jsonObj.discount = req.body.discount;
+	    jsonObj.is_percent = req.body.is_percent;
+	    jsonObj.code = req.body.code;
+	    jsonObj.image = req.body.image;
+	    jsonObj.token_cost = 5;
+	    jsonObj.userID = req.body.userID;
+	    this.Coupons.model.create([jsonObj], (err) => {
+		if (err) {
+		    console.log('Object creation failed');
+		}
+	    });
+	    res.send(jsonObj);
+	    this.idGenerator++;
+	});
+
+    this.expressApp.use('/app', router);
 
     this.expressApp.use('/app/json/', express.static(__dirname+'/app/json'));
     this.expressApp.use('/images', express.static(__dirname+'/img'));
