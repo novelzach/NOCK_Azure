@@ -9,16 +9,13 @@ import {CouponsModel} from './model/CouponsModel';
 import {UserModel} from './model/UserModel';
 import {DataAccess} from './DataAccess';
 
-// Creates and configures an ExpressJS web server.
 class App {
 
-  // ref to Express instance
   public expressApp: express.Application;
   public Coupons:CouponsModel;
   public Users:UserModel;
   public idGenerator:number;
 
-  //Run configuration methods on the Express instance.
   constructor() {
     this.expressApp = express();
     this.middleware();
@@ -28,14 +25,12 @@ class App {
 	this.Users = new UserModel();
   }
 
-  // Configure Express middleware.
   private middleware(): void {
     this.expressApp.use(logger('dev'));
     this.expressApp.use(bodyParser.json());
     this.expressApp.use(bodyParser.urlencoded({ extended: false }));
   }
 
-  // Configure API endpoints.
   private routes(): void {
     let router = express.Router();
     router.get('/user/:userID', (req, res) => {
@@ -61,7 +56,6 @@ class App {
 	    this.Users.retrieveAllUsers(res);
 	});
 
-	//add posts under here
 	router.post('/coupons', (req, res) => {
 	    console.log('Post request body: ${req.body}');
 	    var jsonObj: any = {};
