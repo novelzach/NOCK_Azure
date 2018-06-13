@@ -22,7 +22,12 @@ var App = /** @class */ (function () {
         this.expressApp.use(logger('dev'));
         this.expressApp.use(bodyParser.json());
         this.expressApp.use(bodyParser.urlencoded({ extended: false }));
-        this.expressApp.use(session({ secret: 'keyboard cat' }));
+        this.expressApp.use(session({
+            secret: 'keyboard cat',
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: true }
+        }));
         this.expressApp.use(passport.initialize());
         this.expressApp.use(passport.session());
     };
