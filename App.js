@@ -3,23 +3,21 @@ exports.__esModule = true;
 var express = require("express");
 var logger = require("morgan");
 var bodyParser = require("body-parser");
+var session = require("express-session");
 var CouponsModel_1 = require("./model/CouponsModel");
 var UserModel_1 = require("./model/UserModel");
-var GooglePassport_1 = require("./GooglePassport");
+var googlePassport_1 = require("./googlePassport");
 var passport = require('passport');
-var session = require('express-session');
 var App = /** @class */ (function () {
-    
     function App() {
+        this.googlePassportObj = new googlePassport_1["default"]();
         this.expressApp = express();
-        this.googlePassportObj = new GooglePassport_1["default"]();
         this.middleware();
         this.routes();
         this.idGenerator = 100;
         this.Coupons = new CouponsModel_1.CouponsModel();
         this.Users = new UserModel_1.UserModel();
     }
-   
     App.prototype.middleware = function () {
         this.expressApp.use(logger('dev'));
         this.expressApp.use(bodyParser.json());
@@ -28,7 +26,6 @@ var App = /** @class */ (function () {
         this.expressApp.use(passport.initialize());
         this.expressApp.use(passport.session());
     };
-
     App.prototype.validateAuth = function (req, res, next) {
         if (req.isAuthenticated()) {
             console.log("user is authenticated");
@@ -37,15 +34,12 @@ var App = /** @class */ (function () {
         console.log("user is not authenticated");
         res.redirect('/');
     };
-    
     App.prototype.routes = function () {
         var _this = this;
         var router = express.Router();
-
         router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
-        router.get('/auth/google/callback', passport.authenticate('google', { successRedirect: 'https://nock.azurewebsites.net', failureRedirect: '/'
+        router.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/#/welcome', failureRedirect: '/'
         }));
-
         router.get('/app/user/:userID', function (req, res) {
             var id = req.params.userID;
             console.log('Query single user with id: ' + id);
@@ -65,8 +59,7 @@ var App = /** @class */ (function () {
             console.log('Get all users');
             _this.Users.retrieveAllUsers(res);
         });
-        
-        router.post('/coupons', function (req, res) {
+        router.post('/app/coupons', function (req, res) {
             console.log('Post request body: ${req.body}');
             var jsonObj = {};
             jsonObj.couponID = _this.idGenerator;

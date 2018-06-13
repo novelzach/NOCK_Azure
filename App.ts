@@ -9,7 +9,7 @@ import * as session from 'express-session';
 import {CouponsModel} from './model/CouponsModel';
 import {UserModel} from './model/UserModel';
 import {DataAccess} from './DataAccess';
-import GooglePassportObj from './GooglePassport';
+import GooglePassportObj from './googlePassport';
 let passport = require('passport');
 class App {
 
