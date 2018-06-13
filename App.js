@@ -42,7 +42,9 @@ var App = /** @class */ (function () {
     App.prototype.routes = function () {
         var _this = this;
         var router = express.Router();
-        router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
+        router.get('/auth/google', passport.authenticate('google', { scope: ['https://accounts.google.com/o/oauth2/auth', 'email'] }
+        //'https://www.googleapis.com/auth/plus.login', 'email'] }
+        ));
         router.get('/auth/google/callback', passport.authenticate('google', { successRedirect: '/#/welcome', failureRedirect: '/'
         }));
         router.get('/app/user/:userID', function (req, res) {

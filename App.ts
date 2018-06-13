@@ -54,7 +54,8 @@ class App {
 	
 	router.get('/auth/google', 
         passport.authenticate('google', 
-            { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }
+            { scope: ['https://accounts.google.com/o/oauth2/auth', 'email']}
+	    //'https://www.googleapis.com/auth/plus.login', 'email'] }
         )
 	);
 	
